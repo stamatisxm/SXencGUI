@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=SXencGUI
+Name[el]=SXencGUI
+GenericName=SXencGUI
+GenericName[el]=SXencGUI
+Comment=Zenity encfs Frontend
+Comment[el]=Γραφικός χειρισμός του encfs μέσω Zenity
+Type=Application
+TryExec=SXencGUI
+Exec=SXencGUI
+Icon=SXencGUI
+Categories=Utility;
