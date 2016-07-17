@@ -1,7 +1,7 @@
 # SXencGUI
 Zenity-driven Mount / Unmount of encrypted directories
 
-<img alt="SXencGUI Logo" src="http://ideaware.xyz/wp-content/uploads/2016/07/SXencGUI.png" width="48px" height="48px" />
+<img alt="SXencGUI Logo" src="http://ideaware.xyz/wp-content/uploads/2016/05/SXencGUI.png" width="48px" height="48px" />
 
 ## SXencGUI – { Mount / Unmount Encrypted Directories }
 SXencGUI is a simple Zenity front-end to encfs, useful for handling the mounting / unmounting of encrypted directories previously set up with encfs. The interface is simple and self explanatory.
