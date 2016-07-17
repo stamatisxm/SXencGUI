@@ -1,27 +1,26 @@
-# ZumDisks
-Zenity Assisted Mount / Unmount Devices
+# SXencGUI
+Zenity-driven Mount / Unmount of encrypted directories
 
-<img alt="ZumDisks Logo" src="http://ideaware.xyz/wp-content/uploads/2016/01/ZumDisks.png" width="48px" height="48px" />
+<img alt="SXencGUI Logo" src="http://ideaware.xyz/wp-content/uploads/2016/01/SXencGUI.png" width="48px" height="48px" />
 
-## ZumDisks – { Mount / Unmount Block Devices }
-ZumDisks is a simple Zenity front-end to udisks and udisksctl, useful for handling the mounting / unmounting of partitions on internal and removable disks. The interface is simple and self explanatory.
+## SXencGUI – { Mount / Unmount Encrypted Directories }
+SXencGUI is a simple Zenity front-end to encfs, useful for handling the mounting / unmounting of encrypted directories previously set up with encfs. The interface is simple and self explanatory.
 
 ### { Program Options }
 
-This is the interface of ZumDisks:
+This is the interface of SXencGUI:
 
-<img alt="ZumDisks Interface" src="http://ideaware.xyz/wp-content/uploads/2016/01/ZumDisks-SShot.png" />
+<img alt="SXencGUI Interface" src="http://ideaware.xyz/wp-content/uploads/2016/01/SXencGUI-SShot.png" />
 
-The “Mountable Devices” is a drop-down that displays the partitions (internal and removable) that can be mounted at runtime. To mount a device select it from the drop-down and click on the “Mount/Unmount/Refresh” button.
+The “Mount/Unmount Action” is a drop-down that contains the **Mount**, **Unmount** and **Refresh** options.
 
-The “Mounted Devices” displays a list of devices currently mounted.
+To mount an encrypted directory, select **Mount** from the **Action** menu, then follow the **File Selection Dialog** to choose an encrypted directory, then the next **File Selection Dialog** to choose the **mount point** then enter your **passphrase** and click **OK**
 
-The “Unmountable Devices” is a drop-down that displays the partitions that can be unmounted at runtime. To unmount a device, select it from the drop-down and click on the “Mount/Unmount/Refresh” button.
+The “Mounted Directories” displays a list of encrypted directories currently mounted.
 
-NOTE: System partitions (/, /home, /usr, /tmp, etc) are NOT available in this drop-down menu, as they may NOT be unmounted at runtime.
+To unmount an encrypted directory, select **Unmount** from the **Action** menu, then select the directory from the “Mounted Directories” List and click on the “Mount/Unmount/Refresh” button.
+
 Lastly, there is a help drop-down menu, labelled “Click drop-down Help”, summarizing the program’s operation.
-
-
 
 ### { Program Setup }
 This program is going to be installed by default in your **$HOME/bin** directory. If you have not set your **$HOME/bin** in the **$PATH**, see [this](http://istos.xyz/linux/include-homebin-in-any-desktop-environment/ "Include $HOME/bin in any Desktop Environment") or [this snippet](http://istos.xyz/linux/include-homebin-in-the-path-for-bash-shell "Setup your $HOME/bin in the $PATH") for details.
@@ -29,16 +28,15 @@ This program is going to be installed by default in your **$HOME/bin** directory
 To run this program, you need to have the following packages installed in your system (Check with your package manager):
 
 - _**zenity**_
-- _**sudo**_
-- Either _**udisks**_ or _**udisks2**_ (or both)
+- _**encfs**_
 
 #### Once the above packages are installed
-- Download ZumDisks
+- Download SXencGUI
 - Move the downloaded tarball into your **$HOME**, as all extracted files and directories will be relative to your **$HOME**
 - Expand the tar file in a terminal by issuing:  
-<code>**tar xf ZumDisks\_&lt;version&gt;.tar**</code>
+<code>**tar xf SXencGUI\_&lt;version&gt;.tar**</code>
 - Invoke the program from the terminal, running:  
-<code>**ZumDisks &**</code>  
+<code>**SXencGUI &**</code>  
 to ensure that it loads properly and no error messages are shown.
 
 If everything has gone ok, you should be able to find the program in the _**Accessories**_ program group on your desktop manager.
@@ -46,8 +44,8 @@ If everything has gone ok, you should be able to find the program in the _**Acce
 ### { File List }
 The tarball contains these files (relative to the user's $HOME):
 <pre>
-bin/ZumDisks
-.local/share/icons/ZumDisks.png
-.local/share/applications/ZumDisks.desktop
+bin/SXencGUI
+.local/share/icons/SXencGUI.png
+.local/share/applications/SXencGUI.desktop
 </pre>
 
