@@ -37,7 +37,7 @@ MESSAGECMD="${g}xmessage"
 
 [[ ! -x $(which zenity) ]] && $MESSAGECMD -title "${0##*/}" "This program requires zenity to run" && exit
 
-[[ ! -x $(which encfs) ]] && zenity --error --title "${0##*/}" --text "You need to install encfs for me, please." && exit
+[[ ! -x $(which encfs) ]] && { zenity --error --title "${0##*/}" --text "* You need to install encfs first!\n\n\tTHEN:\n\n* Create an initial encrypted directory\nwith encfs as follows:\n\nencfs ~/some_directory ~/some_existing_mount_point\n\n* Then you can use this program to handle\n(mount / unmount) encrypted directories." || true; } && exit
 
 [[ $(pgrep -au $USER zenity | grep "\-\-name=${0##*/}") ]] && { zenity 2>/dev/null --error --text "${0##*/} is already running!" & } && exit
 
