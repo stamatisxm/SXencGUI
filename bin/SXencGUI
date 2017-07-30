@@ -20,6 +20,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# version 0.2.4 - Added password attempts limit
 # version 0.2.3 - Fixed some logic bugs
 # version 0.2.2 - Added Help Dropdown Box
 # version 0.2.1 - Modified interface to include mount information
@@ -58,10 +59,14 @@ showVersion() {
 [[ -x $(which gxmessage) ]] && g='g'
 
 MESSAGECMD="${g}xmessage"
+ZMSGDIM01='--width=400 --height=256'
+ZMSGDIM02='--width=320 --height=192'
+ERRMSG01="This program requires the installation of <span color='#FF0000'>encfs</span> utility!\n\n\tTHEN:\n\n* Create an initial encrypted directory with <span color='#FF0000'>encfs</span> as follows:\n<span color='#0000FF'>encfs ~/some_directory ~/some_existing_mount_point</span>\n\n* Use <span color='#0000FF'>${0##*/}</span> to mount / unmount encrypted directories."
+ERRMSG02="You have attempted unsuccessfuly <span color='#FF0000'>3 times</span> with what seems to be the wrong password...\n\nReturning to the initial screen of ${0##*/}..."
 
-[[ ! -x $(which zenity) ]] && $MESSAGECMD -title "${0##*/}" "This program requires zenity to run" && exit
+[[ ! -x $(which zenity) ]] && $MESSAGECMD -title "${0##*/}" "${0##*/} requires zenity to be installed on this system!" && exit
 
-[[ ! -x $(which encfs) ]] && { zenity --error --title "${0##*/}" --text "* You need to install encfs first!\n\n\tTHEN:\n\n* Create an initial encrypted directory\nwith encfs as follows:\n\nencfs ~/some_directory ~/some_existing_mount_point\n\n* Then you can use this program to handle\n(mount / unmount) encrypted directories." || true; } && exit
+[[ ! -x $(which encfs) ]] && { zenity 2>/dev/null $ZMSGDIM01 --error --title "${0##*/}" --text "$ERRMSG01" || true; } && exit
 
 [[ $(pgrep -au $USER zenity | grep "\-\-name=${0##*/}") ]] && { zenity 2>/dev/null --error --text "${0##*/} is already running!" & } && exit
 
@@ -102,11 +107,11 @@ while true; do {
       PASSWD=$(zenity 2>/dev/null --title="Passphrase" --name="${0##*/} $MYVERSION" --password) || break
       [[ -z $PASSWD ]] && continue
       [[ -n $ENCDIR ]] && [[ -n $MNTDIR ]] && [[ -n $PASSWD ]] \
-        && echo $PASSWD | encfs -S $ENCDIR $MNTDIR \
+        && echo $PASSWD | encfs &>/dev/null -S $ENCDIR $MNTDIR \
         || { ((PASSWDCOUNTER++)) && continue; } && break
     }; done
     [[ $PASSWDCOUNTER -eq 3 ]] \
-    && zenity 2>/dev/null --width=288 --height=128 --error --text "You have attempted unsuccessfuly 3 times\nwith what seems to be the wrong password...\n\nReturning to the initial screen of ${0##*/}..."
+    && zenity 2>/dev/null $ZMSGDIM02 --error --text "$ERRMSG02"
 
   } elif [[ $MNTOP == "Unmount" ]] && [[ -n $MNTDIR ]]; then {
     [[ -n $MNTDIR ]] \
