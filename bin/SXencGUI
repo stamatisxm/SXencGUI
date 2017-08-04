@@ -20,6 +20,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# version 0.2.5 - Added Resource file capabilities
 # version 0.2.4 - Added password attempts limit
 # version 0.2.3 - Fixed some logic bugs
 # version 0.2.2 - Added Help Dropdown Box
@@ -73,6 +74,10 @@ ERRMSG02="You have attempted unsuccessfuly <span color='#FF0000'>3 times</span> 
 MYVERSION=$(grep '^# version' $0 | cut -f3 -d\  | sort -r | head -1)
 
 while true; do {
+  RCFILE=$HOME/.SXencGUIrc
+  MNTPLIST=$(paste 2>/dev/null -s -d'|' $RCFILE)
+
+  [[ -n $MNTPLIST ]] && MNTPLIST="|$MNTPLIST"
 
   ZOPERATION=$(zenity 2>/dev/null \
     --cancel-label="Quit ${0##*/}" \
@@ -83,6 +88,8 @@ while true; do {
     --forms \
     --add-combo="Mount/Unmount Action:" \
     --combo-values="Mount|Unmount|Refresh" \
+    --add-combo="[Encrypted Directory] [Mountpoint]:" \
+    --combo-values="$MNTPLIST" \
     --add-list="Mounted Directories:" \
     --list-values="$(mount | grep '^encfs' | awk '{ print $3 }' | paste -s -d'|')" \
     --add-combo="Click Drop-down Help:" \
@@ -90,16 +97,22 @@ while true; do {
 
   [[ $? -ne 0 ]] && break
 
-  ZOPERATION=$(echo $ZOPERATION | sed -e 's@\s@@g' -e 's@,@@')
+  ZOPERATION=$(echo $ZOPERATION | sed -e 's@|\s|@||@g' -e 's@,@@')
   MNTOP=$(echo $ZOPERATION | cut -f1 -d'|')
-  MNTDIR=$(echo $ZOPERATION | cut -f2 -d'|')
+  MNTGRP=$(echo $ZOPERATION | cut -f2 -d'|')
+  MNTDIR=$(echo $ZOPERATION | cut -f3 -d'|')
+  
+#echo $ZOPERATION && exit;
 
   if [[ $MNTOP == "Mount" ]]; then {
-    ENCDIR=$(zenity 2>/dev/null --title="Select Encrypted Directory" --name="${0##*/} $MYVERSION" --file-selection --directory)
-    ENCDIR=$(echo $ENCDIR | sed -e 's@,@@')
+    ENCDIR=$(echo $MNTGRP | cut -f1 -d' ')
+    [[ -z $ENCDIR ]] && \
+      ENCDIR=$(zenity 2>/dev/null --title="Select Encrypted Directory" --name="${0##*/} $MYVERSION" --file-selection --directory) && ENCDIR=$(echo $ENCDIR | sed -e 's@,@@')
     [[ $ENCDIR == $HOME ]] || [[ -z $ENCDIR ]] && continue
-    MNTDIR=$(zenity 2>/dev/null --title="Select Mount Point" --name="${0##*/} $MYVERSION" --file-selection --directory)
-    MNTDIR=$(echo $MNTDIR | sed -e 's@,@@')
+
+    MNTDIR=$(echo $MNTGRP | cut -f2 -d' ')
+    [[ -z $MNTDIR ]] && \
+      MNTDIR=$(zenity 2>/dev/null --title="Select Mount Point" --name="${0##*/} $MYVERSION" --file-selection --directory) && MNTDIR=$(echo $MNTDIR | sed -e 's@,@@')
     [[ $MNTDIR == $HOME ]] || [[ -z $MNTDIR ]] || [[ $ENCDIR == $MNTDIR ]] && continue
     PASSWDCOUNTER=0
 
@@ -107,7 +120,7 @@ while true; do {
       PASSWD=$(zenity 2>/dev/null --title="Passphrase" --name="${0##*/} $MYVERSION" --password) || break
       [[ -z $PASSWD ]] && continue
       [[ -n $ENCDIR ]] && [[ -n $MNTDIR ]] && [[ -n $PASSWD ]] \
-        && echo $PASSWD | encfs &>/dev/null -S $ENCDIR $MNTDIR \
+        && echo $PASSWD | encfs -S $ENCDIR $MNTDIR \
         || { ((PASSWDCOUNTER++)) && continue; } && break
     }; done
     [[ $PASSWDCOUNTER -eq 3 ]] \
